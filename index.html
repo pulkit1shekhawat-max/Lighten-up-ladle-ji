@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>A Quiet Secret</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(
+            to bottom,
+            #6b5c74 0%,
+            #8c6f86 45%,
+            #e3b39c 75%,
+            #2f2d3a 100%
+        );
+        font-family: 'Georgia', serif;
+        color: #2f2d3a;
+        text-align: center;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    /* Birds */
+    .bird {
+        position: absolute;
+        font-size: 24px;
+        opacity: 0.22;
+        animation: fly linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes fly {
+        from { transform: translateX(-15vw); }
+        to   { transform: translateX(115vw); }
+    }
+
+    /* Popup */
+    .popup {
+        position: relative;
+        background: rgba(255, 255, 255, 0.32);
+        backdrop-filter: blur(9px);
+        padding: 38px 34px;
+        border-radius: 22px;
+        max-width: 440px;
+        box-shadow: 0 30px 60px rgba(47,45,58,0.35);
+        animation: fadeIn 1.2s ease forwards;
+        overflow: hidden;
+        z-index: 2;
+    }
+
+    h2 {
+        font-weight: normal;
+        line-height: 1.55;
+        margin-bottom: 26px;
+    }
+
+    button {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 30px;
+        background: #2f2d3a;
+        color: #f4f0ec;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.35s ease;
+    }
+
+    button:hover {
+        background: #1f1d28;
+        transform: translateY(-2px);
+    }
+
+    .fact, .final-text {
+        display: none;
+        animation: fadeUp 1.4s ease forwards;
+    }
+
+    .fact {
+        margin-top: 22px;
+        font-size: 17px;
+        line-height: 1.9;
+    }
+
+    /* Moon */
+    .moon {
+        position: absolute;
+        left: 50%;
+        bottom: -140px;
+        width: 140px;
+        height: 140px;
+        background: radial-gradient(circle,
+            rgba(255,255,245,0.95) 0%,
+            rgba(255,245,220,0.55) 35%,
+            rgba(255,230,200,0.25) 55%,
+            transparent 70%
+        );
+        border-radius: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        animation: riseMoon 12s ease-out forwards,
+                   moonPulse 6s ease-in-out infinite;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    @keyframes riseMoon {
+        from { bottom: -140px; opacity: 0; }
+        to   { bottom: 120px; opacity: 1; }
+    }
+
+    @keyframes moonPulse {
+        0%,100% { transform: translateX(-50%) scale(0.97); }
+        50% { transform: translateX(-50%) scale(1.04); }
+    }
+
+    /* Clouds */
+    .cloud {
+        position: absolute;
+        left: -40%;
+        width: 180%;
+        height: 90px;
+        background: linear-gradient(
+            to right,
+            transparent,
+            rgba(255,255,255,0.35),
+            rgba(255,255,255,0.55),
+            rgba(255,255,255,0.35),
+            transparent
+        );
+        filter: blur(14px);
+        opacity: 0.6;
+        animation: driftCloud linear infinite;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .cloud.one {
+        top: 42%;
+        animation-duration: 80s;
+    }
+
+    .cloud.two {
+        top: 48%;
+        opacity: 0.45;
+        animation-duration: 110s;
+    }
+
+    @keyframes driftCloud {
+        from { transform: translateX(0); }
+        to   { transform: translateX(40%); }
+    }
+
+    .final-text {
+        position: relative;
+        margin-top: 28px;
+        font-size: 22px;
+        font-style: italic;
+        opacity: 0.9;
+        z-index: 3;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+
+<body onclick="openPopup()">
+
+<!-- Birds -->
+<div class="bird" style="top:20%; animation-duration: 70s;">🕊️</div>
+<div class="bird" style="top:38%; animation-duration: 90s;">🕊️</div>
+<div class="bird" style="top:62%; animation-duration: 80s;">🕊️</div>
+
+<div id="content"></div>
+
+<script>
+    let opened = false;
+
+    function openPopup() {
+        if (opened) return;
+        opened = true;
+
+        document.getElementById("content").innerHTML = `
+            <div class="popup">
+                <h2>
+                    Why is your mood off?<br>
+                    Do you want to know a secret about you…
+                </h2>
+
+                <button onclick="revealSecret(event)">Click here</button>
+
+                <div class="fact" id="fact">
+                    बहुत बदल गया है ज़माना शैंपी,<br>
+                    हमने सुना है कि—<br>
+                    चांद भी अब चांद देखता है
+                </div>
+
+                <div class="moon" id="moon"></div>
+                <div class="cloud one"></div>
+                <div class="cloud two"></div>
+
+                <div class="final-text" id="finalText">
+                    chand aasman main nahi hai hamara
+                </div>
+            </div>
+        `;
+    }
+
+    function revealSecret(event) {
+        event.stopPropagation();
+        document.getElementById("fact").style.display = "block";
+
+        setTimeout(() => {
+            document.getElementById("moon").style.opacity = "1";
+            document.getElementById("finalText").style.display = "block";
+        }, 2200);
+    }
+</script>
+
+</body>
+</html>
